@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบแสดงผลคะแนนสอบรายบุคคล | โรงเรียนปราจิณราษฎรอำรุง</title>
+  <title>รายงานผลคะแนนสอบ ห้องเรียนพิเศษ | โรงเรียนปราจิณราษฎรอำรุง</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@
     .logo-img { transition: all 0.3s ease; }
     .logo-small { max-width: 75px; position: absolute; left: 15px; top: 10px; animation: playfulWiggle 6s ease-in-out infinite; }
     .logo-obec { max-width: 65px; position: absolute; right: 15px; top: 10px; animation: playfulWiggle 7s ease-in-out infinite reverse; }
-    .logo-large { max-width: 160px; animation: playfulWiggle 5s ease-in-out infinite; }
+    .logo-large { max-width: 150px; animation: playfulWiggle 5s ease-in-out infinite; }
     .footer { margin-top: auto; background-color: #001224; color: white; text-align: center; padding: 15px 0; font-size: 0.95rem; letter-spacing: 0.5px; border-top: 3px solid var(--secondary-color); position: relative; z-index: 10; }
     #dashboardSection, #adminSection, #smallLogo, #obecLogo { display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
@@ -72,13 +72,13 @@
   </div>
 
   <div class="header-bar">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B4%E0%B8%93%E0%B8%A3%E0%B8%B2%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B8%AD%E0%B8%B3%E0%B8%A3%E0%B8%B8%E0%B8%87.png" id="smallLogo" class="logo-img logo-small" alt="โลโก้โรงเรียน">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Thai_OBEC_emblem.svg/960px-Thai_OBEC_emblem.svg.png?20230706081803" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
+    <img src="https://img1.pic.in.th/images/-a33fe26d19c05654.png" id="smallLogo" class="logo-img logo-small" alt="โลโก้โรงเรียน">
+    <img src="https://img1.pic.in.th/images/-eeef84f01cc1573b.png" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
 
-    <div class="header-title pt-1">🎯 ระบบแสดงผลคะแนนสอบรายบุคคล</div> 
-    <div class="header-subtitle mt-2">✨ โครงการห้องเรียนพิเศษ / ห้องเรียนปกติ / ความสามารถพิเศษ ✨<br>ระดับชั้นมัธยมศึกษาปีที่ 1 และ 4</div>
-    <div class="header-subtitle mt-1 fw-bold">โรงเรียนปราจิณราษฎรอำรุง</div>
-    <div class="header-subtitle mt-1 fw-bold" style="color: #FFD700;">สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาปราจีนบุรี นครนายก</div>
+    <div class="header-title pt-1">🎯 ระบบรายงานผลคะแนนสอบรายบุคคล</div> 
+    <div class="header-subtitle mt-2">✨ โครงการห้องเรียนพิเศษ ✨</div>
+    <div class="header-subtitle mt-1 fw-bold">ระดับชั้นมัธยมศึกษาปีที่ 1 และ 4</div>
+    <div class="header-subtitle mt-1 fw-bold" style="color: #FFD700;">โรงเรียนปราจิณราษฎรอำรุง</div>
   </div>
 
   <div class="container mt-4 mb-5">
@@ -162,8 +162,8 @@
   </footer>
 
   <script>
-    // 🛑 อย่าลืมเปลี่ยน URL ตรงนี้เป็น URL ที่คุณ Deploy ใหม่นะครับ 🛑
-    const API_URL = "https://script.google.com/macros/s/AKfycbziWAF4aPtXAE-BYDrlLqCrW0TodV4F1QAqvn_QZ58Pg4yENm96hhLySqI2tM7UCUpn/exec";
+    // 🛑 อย่าลืมเปลี่ยน URL ตรงนี้เป็น URL จาก Apps Script 🛑
+    const API_URL = "https://script.google.com/macros/s/AKfycbz1xoOTJmQsDQ_whDZ4IpxklfPr0cB4n3upllpcXxdNkzV7KeoowxCEmNXkfnEENcot/exec";
 
     let currentUser = '';
     let currentPass = '';
@@ -274,7 +274,7 @@
       
       Swal.fire({
         title: 'กำลังค้นหาข้อมูล... 🚀',
-        html: '<b>ระบบกำลังค้นหาข้อมูลทุกรอบการสอบ...</b>',
+        html: '<b>ระบบกำลังสืบค้นข้อมูลให้ครับ</b>',
         allowOutsideClick: false,
         background: '#fff',
         backdrop: `rgba(0,34,68,0.4)`,
@@ -284,8 +284,8 @@
       const response = await callAPI({ action: "search", studentId: studentId });
 
       if (response.success) {
-        Swal.fire({ icon: 'success', title: '🎉 ค้นหาสำเร็จ!', text: `พบข้อมูลการสอบ ${response.results.length} รายการ`, timer: 1500, showConfirmButton: false });
-        renderDashboard(response.results); // โยนข้อมูล Array เข้าไปวาด UI
+        Swal.fire({ icon: 'success', title: '🎉 ค้นหาสำเร็จ!', text: `พบข้อมูลรายงานคะแนนแล้ว`, timer: 1500, showConfirmButton: false });
+        renderDashboard(response.results); 
         showDashboard();
       } else {
         Swal.fire({ icon: 'error', title: '❌ อ๊ะ! ไม่พบข้อมูล', text: response.message, confirmButtonColor: '#002244' }); 
@@ -296,7 +296,6 @@
       const container = document.getElementById('dashboardContentContainer');
       let finalHtml = '';
 
-      // วนลูปวาดกล่องผลสอบตามจำนวนรอบที่เจอ
       resultsArray.forEach((resultItem) => {
         const data = resultItem.data;
         const headers = resultItem.headers;
@@ -305,9 +304,8 @@
         let infoHtml = ''; let cardsHtml = ''; let summaryHtml = ''; 
         let totalScoreCardHtml = ''; let resultCardHtml = '';
         
-        // แสดงชื่อชีต (ประเภทโควตา/รอบการสอบ)
         if(sheetName) {
-           infoHtml += `<div class="mb-3 border-bottom pb-2"><span class="text-secondary fw-bold">ประเภทการสมัคร :</span> <strong style="color: #002244; background: #FFD700; padding: 5px 15px; border-radius: 10px;" class="fs-5 ms-2">🎯 ${sheetName}</strong></div>`;
+           infoHtml += `<div class="mb-3 border-bottom pb-2"><span class="text-secondary fw-bold">ระดับชั้น/แผนการเรียน :</span> <strong style="color: #002244; background: #FFD700; padding: 5px 15px; border-radius: 10px;" class="fs-5 ms-2">🎯 ${sheetName}</strong></div>`;
         }
 
         const infoFields = ['ระดับชั้น/โครงการ', 'รหัสประจำตัวประชาชน', 'รหัส', 'ชื่อ-สกุล', 'โรงเรียนเดิม']; 
@@ -317,7 +315,6 @@
           }
         });
 
-        // สร้างการ์ดคะแนน
         headers.forEach(key => {
           if(!infoFields.includes(key) && data[key] !== undefined) {
             let scoreValue = data[key] === "" ? "-" : data[key];
@@ -338,7 +335,6 @@
 
         if(totalScoreCardHtml || resultCardHtml) summaryHtml = `<div class="summary-grid">${totalScoreCardHtml}${resultCardHtml}</div>`;
 
-        // นำชิ้นส่วนทั้งหมดมาประกอบเป็นกล่อง 1 รอบการสอบ
         finalHtml += `
           <div class="result-block mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.7); border: 2px dashed #002244;">
             <div class="mb-4 bg-white p-3 rounded-4 border shadow-sm" style="font-size: 1.2rem;">
@@ -349,7 +345,7 @@
             </div>
             
             <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
-              <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">📊 ผลคะแนนสอบ</h4>
+              <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">📊 รายงานคะแนนสอบ</h4>
             </div>
             
             <div class="score-grid">${cardsHtml}</div>
