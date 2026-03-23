@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>รายงานผลคะแนนสอบ ห้องเรียนพิเศษ | โรงเรียนปราจิณราษฎรอำรุง</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -17,48 +17,74 @@
       --card-shadow: 0 20px 40px rgba(0, 34, 68, 0.2);
     }
     body { font-family: 'Kanit', sans-serif; background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; background-attachment: fixed; }
+    
+    /* Background Emojis */
     .emoji-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; display: flex; justify-content: space-evenly; align-items: center; pointer-events: none; user-select: none; }
     .emoji-column { display: flex; flex-direction: column; gap: 40px; animation: floatVertical 8s ease-in-out infinite; }
     .emoji-column:nth-child(even) { animation-delay: 2s; animation-duration: 9s; }
     .emoji-column:nth-child(3n) { animation-delay: 1s; animation-duration: 7s; }
-    .emoji-column span { font-size: 3.5rem; filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1)); }
+    .emoji-column span { font-size: clamp(2rem, 5vw, 3.5rem); filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1)); }
     @keyframes floatVertical { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-40px) rotate(5deg); } }
-    .header-bar { background: linear-gradient(90deg, #001224, #002244); color: white; border-bottom: 5px solid var(--secondary-color); padding: 15px 0; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; }
-    .header-title { font-weight: 700; font-size: 2.3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: 0.5px; color: var(--secondary-color); }
-    .header-subtitle { font-size: 1.15rem; font-weight: 400; color: #ffffff; }
+    
+    /* Header Responsive */
+    .header-bar { background: linear-gradient(90deg, #001224, #002244); color: white; border-bottom: 5px solid var(--secondary-color); padding: 15px 10px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; display: flex; justify-content: center; align-items: center; min-height: 120px;}
+    .header-content { max-width: 800px; margin: 0 auto; z-index: 2; padding: 0 75px; /* ป้องกันข้อความทับโลโก้ */ }
+    .header-title { font-weight: 700; font-size: clamp(1.2rem, 4vw, 2.3rem); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: 0.5px; color: var(--secondary-color); line-height: 1.3;}
+    .header-subtitle { font-size: clamp(0.85rem, 2.5vw, 1.15rem); font-weight: 400; color: #ffffff; line-height: 1.4; }
+    
+    /* Logos Responsive */
+    @keyframes playfulWiggle { 0%, 100% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); } 25% { transform: rotate(3deg) scale(1.05); filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));} 75% { transform: rotate(-3deg) scale(0.98); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));} }
+    .logo-img { transition: all 0.3s ease; position: absolute; top: 50%; transform: translateY(-50%); z-index: 5; }
+    .logo-small { left: 15px; width: clamp(45px, 10vw, 75px); animation: playfulWiggle 6s ease-in-out infinite; transform-origin: center left;}
+    .logo-obec { right: 15px; width: clamp(40px, 9vw, 65px); animation: playfulWiggle 7s ease-in-out infinite reverse; transform-origin: center right;}
+    .logo-large { max-width: clamp(100px, 20vw, 150px); animation: playfulWiggle 5s ease-in-out infinite; position: static; transform: none;}
+    
+    /* Cards & Grids */
     .card-custom { background: var(--glass-bg); border-radius: 25px; box-shadow: var(--card-shadow); border: 2px solid rgba(255,255,255,0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
     .announcement-box { background: #fff8e1; border-left: 6px solid var(--secondary-color); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: left; display: none; }
-    .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; margin-bottom: 15px; }
+    
+    .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-top: 15px; margin-bottom: 15px; }
     .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-    @media (max-width: 768px) { .summary-grid { grid-template-columns: 1fr; } }
-    .score-card { background: white; border-radius: 20px; padding: 20px 15px; text-align: center; border: 2px solid #e2e8f0; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; }
-    .score-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(0, 34, 68, 0.2); border-color: var(--primary-color); }
-    .score-title { font-size: 1.1rem; color: #4a5568; font-weight: 600; margin-bottom: 5px; }
-    .score-value { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    
+    .score-card { background: white; border-radius: 20px; padding: 15px 10px; text-align: center; border: 2px solid #e2e8f0; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; justify-content: center; height: 100%;}
+    .score-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 30px rgba(0, 34, 68, 0.2); border-color: var(--primary-color); z-index: 2;}
+    .score-title { font-size: clamp(0.9rem, 2.5vw, 1.1rem); color: #4a5568; font-weight: 600; margin-bottom: 5px; }
+    .score-value { font-size: clamp(1.8rem, 5vw, 2.5rem); font-weight: 700; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    
     .score-card.total-score { background: linear-gradient(135deg, #001a33, #003366); color: white; border: none; }
-    .score-card.total-score .score-title { color: rgba(255,255,255,0.9); font-size: 1.3rem;}
-    .score-card.total-score .score-value { color: var(--secondary-color); font-size: 3rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
+    .score-card.total-score .score-title { color: rgba(255,255,255,0.9); font-size: clamp(1rem, 3vw, 1.3rem);}
+    .score-card.total-score .score-value { color: var(--secondary-color); font-size: clamp(2.2rem, 6vw, 3rem); text-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
     .score-card.result-score { background: linear-gradient(135deg, #FFD700, #FDB931); color: var(--primary-color); border: none; box-shadow: 0 10px 20px rgba(253, 185, 49, 0.3); }
-    .score-card.result-score .score-title { color: var(--primary-color); font-size: 1.3rem; font-weight: 700;}
-    .score-card.result-score .score-value { color: var(--primary-color); font-size: 2.2rem; text-shadow: none; line-height: 1.2; display: flex; align-items: center; justify-content: center; height: 100%; min-height: 60px; font-weight: 800;}
-    .btn-custom { border-radius: 15px; padding: 12px; font-size: 1.2rem; font-weight: 600; transition: all 0.3s; }
+    .score-card.result-score .score-title { color: var(--primary-color); font-size: clamp(1rem, 3vw, 1.3rem); font-weight: 700;}
+    .score-card.result-score .score-value { color: var(--primary-color); font-size: clamp(1.6rem, 4.5vw, 2.2rem); text-shadow: none; line-height: 1.2; font-weight: 800;}
+    
+    /* Buttons */
+    .btn-custom { border-radius: 15px; padding: clamp(10px, 3vw, 12px); font-size: clamp(1rem, 3vw, 1.2rem); font-weight: 600; transition: all 0.3s; }
     .btn-login { background-color: var(--primary-color); color: white; border: none; box-shadow: 0 5px 15px rgba(0, 34, 68, 0.4); }
     .btn-login:hover { background-color: #001224; color: white; transform: translateY(-3px); }
     .btn-facebook { background: linear-gradient(90deg, #1877F2, #145dbf); color: white; }
-    .btn-facebook:hover { background: #145dbf; color: white; transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4); }
+    .btn-facebook:hover { background: #145dbf; color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4); }
     .btn-danger-custom { background: linear-gradient(90deg, #ff416c, #ff4b2b); color: white; border: none; }
     .btn-danger-custom:hover { background: linear-gradient(90deg, #ff4b2b, #ff416c); color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 65, 108, 0.4); }
-    .btn-admin-float { position: fixed; bottom: 15px; left: 15px; background: rgba(255, 255, 255, 0.8); color: var(--primary-color); border: 2px solid rgba(0, 34, 68, 0.1); border-radius: 20px; padding: 8px 15px; font-size: 0.95rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; }
-    .btn-admin-float:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); border-color: var(--primary-color); }
-    @media (max-width: 576px) { .btn-admin-float { bottom: 10px; left: 10px; font-size: 0.85rem; padding: 6px 12px; } }
-    @keyframes playfulWiggle { 0%, 100% { transform: rotate(0deg) translateY(0) scale(1); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); } 25% { transform: rotate(3deg) translateY(-4px) scale(1.05); filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));} 75% { transform: rotate(-3deg) translateY(2px) scale(0.98); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));} }
-    .logo-img { transition: all 0.3s ease; }
-    .logo-small { max-width: 75px; position: absolute; left: 15px; top: 10px; animation: playfulWiggle 6s ease-in-out infinite; }
-    .logo-obec { max-width: 65px; position: absolute; right: 15px; top: 10px; animation: playfulWiggle 7s ease-in-out infinite reverse; }
-    .logo-large { max-width: 150px; animation: playfulWiggle 5s ease-in-out infinite; }
-    .footer { margin-top: auto; background-color: #001224; color: white; text-align: center; padding: 15px 0; font-size: 0.95rem; letter-spacing: 0.5px; border-top: 3px solid var(--secondary-color); position: relative; z-index: 10; }
-    #dashboardSection, #adminSection, #smallLogo, #obecLogo { display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    
+    .btn-admin-float { position: fixed; bottom: 15px; left: 15px; background: rgba(255, 255, 255, 0.9); color: var(--primary-color); border: 2px solid rgba(0, 34, 68, 0.1); border-radius: 20px; padding: 8px 15px; font-size: 0.95rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; }
+    .btn-admin-float:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+    
+    .footer { margin-top: auto; background-color: #001224; color: white; text-align: center; padding: 15px 10px; font-size: clamp(0.8rem, 2vw, 0.95rem); letter-spacing: 0.5px; border-top: 3px solid var(--secondary-color); position: relative; z-index: 10; }
+    
+    #dashboardSection, #adminSection, #smallLogo, #obecLogo { display: none; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* Media Queries for Extra Small Devices (Mobile Phones) */
+    @media (max-width: 576px) { 
+      .header-content { padding: 0 50px; /* ลด padding ลงนิดนึงในมือถือเล็กๆ */ }
+      .summary-grid { grid-template-columns: 1fr; gap: 10px;}
+      .btn-admin-float { bottom: 10px; left: 10px; font-size: 0.8rem; padding: 6px 12px; } 
+      .card-custom { padding: 1.5rem !important; }
+      .result-block { padding: 1rem !important; }
+      .fs-4 { font-size: 1.25rem !important; }
+      .fs-5 { font-size: 1.1rem !important; }
+    }
   </style>
 </head>
 <body>
@@ -67,24 +93,27 @@
     <div class="emoji-column"><span>🎒</span><span>✏️</span><span>📏</span><span>📱</span></div>
     <div class="emoji-column"><span>📚</span><span>💻</span><span>🎓</span><span>🏫</span></div>
     <div class="emoji-column"><span>🚀</span><span>🔬</span><span>🎤</span><span>📓</span></div>
-    <div class="emoji-column"><span>💡</span><span>📝</span><span>🏆</span><span>🖊️</span></div>
+    <div class="emoji-column d-none d-sm-flex"><span>💡</span><span>📝</span><span>🏆</span><span>🖊️</span></div>
     <div class="emoji-column d-none d-md-flex"><span>🌟</span><span>🧬</span><span>🎯</span><span>📈</span></div>
   </div>
 
   <div class="header-bar">
     <img src="https://img1.pic.in.th/images/-a33fe26d19c05654.png" id="smallLogo" class="logo-img logo-small" alt="โลโก้โรงเรียน">
-    <img src="https://img1.pic.in.th/images/-eeef84f01cc1573b.png" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
+    
+    <div class="header-content">
+      <div class="header-title pt-1">🎯 ระบบรายงานผลคะแนนสอบรายบุคคล</div> 
+      <div class="header-subtitle mt-2 fw-bold" style="color: var(--secondary-color);">✨ โครงการห้องเรียนพิเศษ ✨</div>
+      <div class="header-subtitle mt-1">ระดับชั้นมัธยมศึกษาปีที่ 1 และ 4</div>
+      <div class="header-subtitle mt-1 fw-bold">โรงเรียนปราจิณราษฎรอำรุง</div>
+    </div>
 
-    <div class="header-title pt-1">🎯 ระบบรายงานผลคะแนนสอบรายบุคคล</div> 
-    <div class="header-subtitle mt-2">✨ โครงการห้องเรียนพิเศษ ✨</div>
-    <div class="header-subtitle mt-1 fw-bold">ระดับชั้นมัธยมศึกษาปีที่ 1 และ 4</div>
-    <div class="header-subtitle mt-1 fw-bold" style="color: #FFD700;">โรงเรียนปราจิณราษฎรอำรุง</div>
+    <img src="https://img1.pic.in.th/images/-eeef84f01cc1573b.png" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
   </div>
 
-  <div class="container mt-4 mb-5">
+  <div class="container mt-4 mb-5 px-3">
     
     <div id="searchSection" class="row justify-content-center">
-      <div class="col-md-6 col-lg-5 text-center">
+      <div class="col-12 col-md-8 col-lg-5 text-center">
         
         <img src="https://img1.pic.in.th/images/-a33fe26d19c05654.png" id="largeLogo" class="logo-img logo-large mb-4" alt="โลโก้โรงเรียน">
         
@@ -92,14 +121,14 @@
           <div class="d-flex align-items-center mb-2">
             <span class="fs-4 me-2">📢</span> <h5 class="fw-bold m-0" style="color: var(--primary-color);">ประกาศจากระบบ!</h5>
           </div>
-          <div id="publicAnnouncementText" class="text-secondary fw-bold" style="white-space: pre-wrap;">กำลังโหลดประกาศ...</div>
+          <div id="publicAnnouncementText" class="text-secondary fw-bold" style="white-space: pre-wrap; font-size: 0.95rem;">กำลังโหลดประกาศ...</div>
         </div>
 
         <div class="card card-custom p-4 pb-5">
-          <h4 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700;">🔐 เข้าสู่ระบบเพื่อดูคะแนน</h4>
+          <h4 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700; font-size: clamp(1.2rem, 4vw, 1.5rem);">🔐 เข้าสู่ระบบเพื่อดูคะแนน</h4>
           <form id="searchForm" onsubmit="handleSearch(event)">
             <div class="mb-4">
-              <input type="text" class="form-control form-control-lg text-center fs-4" id="studentIdInput" placeholder="✍️ กรอกเลขประจำตัวประชาชน" required style="border-radius: 15px; border: 2px solid var(--primary-color);">
+              <input type="text" class="form-control form-control-lg text-center fs-5" id="studentIdInput" placeholder="✍️ กรอกเลขประจำตัวประชาชน" required style="border-radius: 15px; border: 2px solid var(--primary-color);">
             </div>
             <button type="submit" class="btn btn-login btn-custom w-100 mb-2">🚀 เข้าสู่ระบบเพื่อดูคะแนน</button>
           </form>
@@ -108,13 +137,13 @@
     </div>
 
     <div id="adminSection" class="row justify-content-center">
-      <div class="col-md-6 col-lg-5">
+      <div class="col-12 col-md-8 col-lg-5">
         <div class="card card-custom p-4">
-          <h4 class="text-center mb-4" style="font-weight: 700; color: var(--primary-color);">👨‍💻 ผู้ดูแลระบบ (Admin)</h4>
+          <h4 class="text-center mb-4" style="font-weight: 700; color: var(--primary-color); font-size: clamp(1.2rem, 4vw, 1.5rem);">👨‍💻 ผู้ดูแลระบบ (Admin)</h4>
           
           <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-            <div class="mb-3"><input type="text" class="form-control fs-5" id="adminUser" placeholder="👤 Username" required></div>
-            <div class="mb-4"><input type="password" class="form-control fs-5" id="adminPass" placeholder="🔑 Password" required></div>
+            <div class="mb-3"><input type="text" class="form-control fs-6 p-3" id="adminUser" placeholder="👤 Username" required style="border-radius: 12px;"></div>
+            <div class="mb-4"><input type="password" class="form-control fs-6 p-3" id="adminPass" placeholder="🔑 Password" required style="border-radius: 12px;"></div>
             <button type="submit" class="btn w-100 mb-3 btn-custom fw-bold" style="background-color: var(--secondary-color); color: var(--primary-color);">🔓 เข้าสู่ระบบจัดการ</button>
             <button type="button" class="btn btn-secondary w-100 btn-custom" onclick="showSearch()">⬅️ กลับหน้าหลัก</button>
           </form>
@@ -122,33 +151,37 @@
           <div id="adminControlPanel" style="display: none;">
             <div class="mb-3">
               <label class="form-label fw-bold" style="color: var(--primary-color);">📢 แจ้งข่าว / อัปเดตประกาศระบบ</label>
-              <textarea class="form-control" id="adminAnnounceText" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแจ้งเตือน... (ปล่อยว่างหากต้องการลบประกาศ)"></textarea>
+              <textarea class="form-control" id="adminAnnounceText" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแจ้งเตือน... (ปล่อยว่างหากต้องการลบประกาศ)" style="border-radius: 12px;"></textarea>
             </div>
             <button class="btn btn-success w-100 mb-3 btn-custom fw-bold" onclick="saveAnnouncement()">💾 บันทึกประกาศขึ้นระบบ</button>
             <hr>
             <button class="btn btn-login w-100 mb-3 btn-custom fw-bold" onclick="openDatabase()">🗄️ เปิดฐานข้อมูล (Google Sheet)</button>
             <button class="btn btn-danger-custom w-100 btn-custom" onclick="logoutAdmin()">🚪 ออกจากระบบแอดมิน</button>
           </div>
-
         </div>
       </div>
     </div>
 
     <div id="dashboardSection" class="row justify-content-center">
-      <div class="col-md-11 col-lg-9">
-        <div class="card card-custom p-4 pb-4">
+      <div class="col-12 col-md-11 col-lg-9">
+        <div class="card card-custom p-3 p-md-4">
           
           <div id="dashboardContentContainer"></div>
 
-          <div class="row mb-4 justify-content-center mt-3">
-            <div class="col-md-8 text-center">
+          <div class="row mb-3 justify-content-center mt-3">
+            <div class="col-12 col-md-8 text-center">
               <a href="https://www.facebook.com/prachinratsadornamroongschool?locale=th_TH" target="_blank" class="btn btn-custom btn-facebook w-100 shadow">
                 📘 ติดต่อ Facebook โรงเรียน
               </a>
             </div>
           </div>
 
-          <button class="btn btn-danger-custom btn-custom w-100 shadow-sm" onclick="logout()">🚪 ปิดหน้าต่าง</button>
+          <div class="row justify-content-center">
+            <div class="col-12 col-md-8 text-center">
+              <button class="btn btn-danger-custom btn-custom w-100 shadow-sm" onclick="logout()">🚪 ปิดหน้าต่าง</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -162,8 +195,8 @@
   </footer>
 
   <script>
-    // 🛑 อย่าลืมเปลี่ยน URL ตรงนี้เป็น URL จาก Apps Script 🛑
-    const API_URL = "https://script.google.com/macros/s/AKfycbz1xoOTJmQsDQ_whDZ4IpxklfPr0cB4n3upllpcXxdNkzV7KeoowxCEmNXkfnEENcot/exec";
+    // 🛑 นำ Web App URL ของคุณ มาวางตรงนี้ครับ 🛑
+    const API_URL = "https://script.google.com/macros/s/AKfycbz2toAe6Bus545ssABX0M-jVFCn260FTeZRQjxQk9wljBLrpi7siWGa8PIjgL5QDUN9/exec";
 
     let currentUser = '';
     let currentPass = '';
@@ -235,7 +268,7 @@
       e.preventDefault();
       currentUser = document.getElementById('adminUser').value;
       currentPass = document.getElementById('adminPass').value;
-      Swal.fire({ title: 'กำลังตรวจสอบสิทธิ์... 🕵️‍♂️', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+      Swal.fire({ title: 'กำลังตรวจสอบสิทธิ์...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
       
       const res = await callAPI({ action: "checkAdmin", user: currentUser, pass: currentPass });
       
@@ -305,13 +338,13 @@
         let totalScoreCardHtml = ''; let resultCardHtml = '';
         
         if(sheetName) {
-           infoHtml += `<div class="mb-3 border-bottom pb-2"><span class="text-secondary fw-bold">ระดับชั้น/แผนการเรียน :</span> <strong style="color: #002244; background: #FFD700; padding: 5px 15px; border-radius: 10px;" class="fs-5 ms-2">🎯 ${sheetName}</strong></div>`;
+           infoHtml += `<div class="mb-3 border-bottom pb-2"><span class="text-secondary fw-bold" style="font-size: clamp(0.9rem, 2.5vw, 1rem);">ระดับชั้น/แผนการเรียน :</span> <strong style="color: #002244; background: #FFD700; padding: 5px 12px; border-radius: 8px; font-size: clamp(1rem, 3vw, 1.25rem);" class="ms-1 ms-md-2 d-inline-block mt-1 mt-sm-0">🎯 ${sheetName}</strong></div>`;
         }
 
         const infoFields = ['ระดับชั้น/โครงการ', 'รหัสประจำตัวประชาชน', 'รหัส', 'ชื่อ-สกุล', 'โรงเรียนเดิม']; 
         infoFields.forEach(field => {
           if(data[field] !== undefined) {
-             infoHtml += `<div class="mb-2"><span class="text-secondary fw-bold" style="color:#6c757d !important;">${field} :</span> <strong style="color: var(--primary-color);" class="fs-4 ms-2">${data[field]}</strong></div>`;
+             infoHtml += `<div class="mb-2"><span class="text-secondary fw-bold" style="color:#6c757d !important; font-size: clamp(0.9rem, 2.5vw, 1rem);">${field} :</span> <strong style="color: var(--primary-color); font-size: clamp(1rem, 3vw, 1.25rem);" class="ms-1 ms-md-2">${data[field]}</strong></div>`;
           }
         });
 
@@ -337,15 +370,15 @@
 
         finalHtml += `
           <div class="result-block mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.7); border: 2px dashed #002244;">
-            <div class="mb-4 bg-white p-3 rounded-4 border shadow-sm" style="font-size: 1.2rem;">
+            <div class="mb-4 bg-white p-3 p-md-4 rounded-4 border shadow-sm">
               <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
-                <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">👤 ข้อมูลนักเรียน</h4>
+                <h4 class="m-0" style="color: var(--primary-color); font-weight: 700; font-size: clamp(1.1rem, 3.5vw, 1.4rem);">👤 ข้อมูลนักเรียน</h4>
               </div>
               ${infoHtml}
             </div>
             
             <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
-              <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">📊 รายงานคะแนนสอบ</h4>
+              <h4 class="m-0" style="color: var(--primary-color); font-weight: 700; font-size: clamp(1.1rem, 3.5vw, 1.4rem);">📊 รายงานคะแนนสอบ</h4>
             </div>
             
             <div class="score-grid">${cardsHtml}</div>
