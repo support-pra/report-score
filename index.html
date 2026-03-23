@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* 🎨 ธีมสีใหม่: น้ำเงิน ขาว เหลือง (คงเดิม) 🎨 */
+      /* 🎨 ธีมสี: น้ำเงิน ขาว เหลือง (คงเดิม) 🎨 */
       --color-blue-main: #153265;    
       --color-blue-dark: #0a1930;    
       --color-blue-light: #2b5099;   
@@ -39,7 +39,7 @@
       position: relative;
     }
 
-    /* Pseudo-element สำหรับภาพพื้นหลังโรงเรียนแบบจางๆ 🟢 */
+    /* 🟢 ส่วนที่แก้ไข: เพิ่มภาพพื้นหลังอาคารเรียนตามลิงก์ที่กำหนด (faded) 🟢 */
     body::before {
       content: "";
       position: fixed;
@@ -47,23 +47,23 @@
       left: 0;
       width: 100%;
       height: 100%;
-      /* 🟢 ใช้ภาพโรงเรียน Prachinratsadornamroong School (image_13.png) 🟢 */
-      background-image: url('https://pra.ac.th/pra-ac/wp-content/uploads/2025/08/DSC_7784-scaled.jpg'); 
+      /* 🟢 ใช้ลิงก์ภาพอาคารเรียนที่คุณแนบมา 🟢 */
+      background-image: url('https://img1.pic.in.th/images/1-school.jpg'); 
       background-repeat: no-repeat;
       background-position: center bottom;
       background-size: cover;
       /* 🟢 ปรับความจางที่เหมาะสม (faded) เล็กน้อย 🟢 */
-      opacity: 0.12; 
-      z-index: -2;
-      filter: grayscale(100%) brightness(1.2); 
+      opacity: 0.15; 
+      z-index: -2; /* อยู่ใต้ทุกอย่างรวมถึง emoji-bg */
+      filter: grayscale(100%) brightness(1.1); /* ปรับเป็นสีเทาและเพิ่มความสว่างเล็กน้อยเพื่อไม่รบกวนข้อมูล */
     }
     
-    /* 🍃 Background Emojis - คงบรรยากาศเดิมไว้ 🍃 */
+    /* 🍃 Background Emojis - คงบรรยากาศเดิมที่มีอิโมจิเคลื่อนไหวไว้ 🍃 */
     .emoji-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.1; display: flex; justify-content: space-evenly; align-items: center; pointer-events: none; user-select: none; }
     .emoji-column { display: flex; flex-direction: column; gap: 40px; animation: floatVertical 10s ease-in-out infinite; }
     .emoji-column:nth-child(even) { animation-delay: 2s; animation-duration: 11s; }
     .emoji-column:nth-child(3n) { animation-delay: 1s; animation-duration: 9s; }
-    .emoji-column span { font-size: clamp(2rem, 5vw, 3.5rem); filter: sepia(50%) hue-rotate(80deg) saturate(50%); }
+    .emoji-column span { font-size: clamp(2rem, 5vw, 3.5rem); filter: grayscale(50%) sepia(20%) hue-rotate(200deg); }
     @keyframes floatVertical { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-30px) rotate(3deg); } }
     
     /* Header Responsive (คงเดิม) */
@@ -253,7 +253,6 @@
     window.onload = function() { fetchAnnouncement(); };
 
     // ฟังก์ชัน API (คงเดิม)
-    // ...
     async function callAPI(payload) {
       try {
         const response = await fetch(API_URL, {
@@ -351,7 +350,6 @@
 
     function logoutAdmin() { currentUser = ''; currentPass = ''; dbUrl = ''; showSearch(); }
 
-    // ฟังก์ชัน handleSearch (ปรับปรุง)
     async function handleSearch(e) {
       e.preventDefault();
       const studentId = document.getElementById('studentIdInput').value;
@@ -377,7 +375,6 @@
     }
 
     // ฟังก์ชัน renderDashboard (คงเดิม)
-    // ...
     function renderDashboard(resultsArray) {
       const container = document.getElementById('dashboardContentContainer');
       let finalHtml = '';
@@ -417,7 +414,7 @@
               if(key.includes("สังคม")) icon = '🌍';
               if(key.includes("ศิลปะ")) icon = '🎨';
               if(key.includes("พละ") || key.includes("พลศึกษา") || key.includes("สุขศึกษา")) icon = '⚽';
-              if(key.includes("ัมภาษณ์") || key.includes("ฏิบัติ") || key.includes("ความสามารถ")) icon = '🌟'; 
+              if(key.includes("สัมภาษณ์") || key.includes("ปฏิบัติ") || key.includes("ความสามารถ")) icon = '🌟'; 
 
               cardsHtml += `<div class="score-card"><div class="score-title">${icon} ${key}</div><div class="score-value">${scoreValue}</div></div>`;
             }
@@ -427,7 +424,7 @@
         if(totalScoreCardHtml || resultCardHtml) summaryHtml = `<div class="summary-grid">${totalScoreCardHtml}${resultCardHtml}</div>`;
 
         finalHtml += `
-          <div class="result-block mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.7); border: 2px dashed var(--accent-brown);">
+          <div class="result-block mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.7); border: 2px dashed var(--color-blue-light);">
             <div class="mb-4 bg-white p-3 p-md-4 rounded-4 border shadow-sm" style="border-color: var(--primary-color) !important;">
               <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
                 <h4 class="m-0" style="color: var(--primary-dark); font-weight: 700; font-size: clamp(1.1rem, 3.5vw, 1.4rem);">👤 ข้อมูลนักเรียน</h4>
