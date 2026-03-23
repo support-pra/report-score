@@ -1,367 +1,114 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบแสดงผลคะแนนสอบรายบุคคล | โรงเรียนปราจิณราษฎรอำรุง</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* ... CSS คงเดิมทั้งหมด ... */
-    :root {
-      --primary-color: #002244; 
-      --secondary-color: #FFD700; 
-      --bg-gradient-1: #e0c3fc;
-      --bg-gradient-2: #8ec5fc;
-      --glass-bg: rgba(255, 255, 255, 0.95);
-      --card-shadow: 0 20px 40px rgba(0, 34, 68, 0.2);
-    }
-    body { font-family: 'Kanit', sans-serif; background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%); overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; background-attachment: fixed; }
-    .emoji-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; display: flex; justify-content: space-evenly; align-items: center; pointer-events: none; user-select: none; }
-    .emoji-column { display: flex; flex-direction: column; gap: 40px; animation: floatVertical 8s ease-in-out infinite; }
-    .emoji-column:nth-child(even) { animation-delay: 2s; animation-duration: 9s; }
-    .emoji-column:nth-child(3n) { animation-delay: 1s; animation-duration: 7s; }
-    .emoji-column span { font-size: 3.5rem; filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.1)); }
-    @keyframes floatVertical { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-40px) rotate(5deg); } }
-    .header-bar { background: linear-gradient(90deg, #001224, #002244); color: white; border-bottom: 5px solid var(--secondary-color); padding: 15px 0; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); position: relative; }
-    .header-title { font-weight: 700; font-size: 2.3rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); letter-spacing: 0.5px; color: var(--secondary-color); }
-    .header-subtitle { font-size: 1.15rem; font-weight: 400; color: #ffffff; }
-    .card-custom { background: var(--glass-bg); border-radius: 25px; box-shadow: var(--card-shadow); border: 2px solid rgba(255,255,255,0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); }
-    .announcement-box { background: #fff8e1; border-left: 6px solid var(--secondary-color); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: left; display: none; }
-    .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; margin-bottom: 15px; }
-    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-    @media (max-width: 768px) { .summary-grid { grid-template-columns: 1fr; } }
-    .score-card { background: white; border-radius: 20px; padding: 20px 15px; text-align: center; border: 2px solid #e2e8f0; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; }
-    .score-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 30px rgba(0, 34, 68, 0.2); border-color: var(--primary-color); }
-    .score-title { font-size: 1.1rem; color: #4a5568; font-weight: 600; margin-bottom: 5px; }
-    .score-value { font-size: 2.5rem; font-weight: 700; color: var(--primary-color); text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-    .score-card.total-score { background: linear-gradient(135deg, #001a33, #003366); color: white; border: none; }
-    .score-card.total-score .score-title { color: rgba(255,255,255,0.9); font-size: 1.3rem;}
-    .score-card.total-score .score-value { color: var(--secondary-color); font-size: 3rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.4); }
-    .score-card.result-score { background: linear-gradient(135deg, #FFD700, #FDB931); color: var(--primary-color); border: none; box-shadow: 0 10px 20px rgba(253, 185, 49, 0.3); }
-    .score-card.result-score .score-title { color: var(--primary-color); font-size: 1.3rem; font-weight: 700;}
-    .score-card.result-score .score-value { color: var(--primary-color); font-size: 2.2rem; text-shadow: none; line-height: 1.2; display: flex; align-items: center; justify-content: center; height: 100%; min-height: 60px; font-weight: 800;}
-    .btn-custom { border-radius: 15px; padding: 12px; font-size: 1.2rem; font-weight: 600; transition: all 0.3s; }
-    .btn-login { background-color: var(--primary-color); color: white; border: none; box-shadow: 0 5px 15px rgba(0, 34, 68, 0.4); }
-    .btn-login:hover { background-color: #001224; color: white; transform: translateY(-3px); }
-    .btn-facebook { background: linear-gradient(90deg, #1877F2, #145dbf); color: white; }
-    .btn-facebook:hover { background: #145dbf; color: white; transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4); }
-    .btn-danger-custom { background: linear-gradient(90deg, #ff416c, #ff4b2b); color: white; border: none; }
-    .btn-danger-custom:hover { background: linear-gradient(90deg, #ff4b2b, #ff416c); color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 65, 108, 0.4); }
-    .btn-admin-float { position: fixed; bottom: 15px; left: 15px; background: rgba(255, 255, 255, 0.8); color: var(--primary-color); border: 2px solid rgba(0, 34, 68, 0.1); border-radius: 20px; padding: 8px 15px; font-size: 0.95rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; }
-    .btn-admin-float:hover { background: var(--primary-color); color: var(--secondary-color); transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); border-color: var(--primary-color); }
-    @media (max-width: 576px) { .btn-admin-float { bottom: 10px; left: 10px; font-size: 0.85rem; padding: 6px 12px; } }
-    @keyframes playfulWiggle { 0%, 100% { transform: rotate(0deg) translateY(0) scale(1); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); } 25% { transform: rotate(3deg) translateY(-4px) scale(1.05); filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));} 75% { transform: rotate(-3deg) translateY(2px) scale(0.98); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));} }
-    .logo-img { transition: all 0.3s ease; }
-    .logo-small { max-width: 75px; position: absolute; left: 15px; top: 10px; animation: playfulWiggle 6s ease-in-out infinite; }
-    .logo-obec { max-width: 65px; position: absolute; right: 15px; top: 10px; animation: playfulWiggle 7s ease-in-out infinite reverse; }
-    .logo-large { max-width: 160px; animation: playfulWiggle 5s ease-in-out infinite; }
-    .footer { margin-top: auto; background-color: #001224; color: white; text-align: center; padding: 15px 0; font-size: 0.95rem; letter-spacing: 0.5px; border-top: 3px solid var(--secondary-color); position: relative; z-index: 10; }
-    #dashboardSection, #adminSection, #smallLogo, #obecLogo { display: none; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแสดงผลคะแนนสอบรายบุคคล | โรงเรียนปราจิณราษฎรอำรุง</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
 
-  <div class="emoji-bg">
-    <div class="emoji-column"><span>🎒</span><span>✏️</span><span>📏</span><span>📱</span></div>
-    <div class="emoji-column"><span>📚</span><span>💻</span><span>🎓</span><span>🏫</span></div>
-    <div class="emoji-column"><span>🚀</span><span>🔬</span><span>🎤</span><span>📓</span></div>
-    <div class="emoji-column"><span>💡</span><span>📝</span><span>🏆</span><span>🖊️</span></div>
-    <div class="emoji-column d-none d-md-flex"><span>🌟</span><span>🧬</span><span>🎯</span><span>📈</span></div>
-  </div>
+    <div class="emoji-bg">
+        <div class="emoji-column"><span>🎒</span><span>✏️</span><span>📏</span><span>📱</span></div>
+        <div class="emoji-column"><span>📚</span><span>💻</span><span>🎓</span><span>🏫</span></div>
+        <div class="emoji-column"><span>🚀</span><span>🔬</span><span>🎤</span><span>📓</span></div>
+        <div class="emoji-column"><span>💡</span><span>📝</span><span>🏆</span><span>🖊️</span></div>
+        <div class="emoji-column d-none d-md-flex"><span>🌟</span><span>🧬</span><span>🎯</span><span>📈</span></div>
+    </div>
 
-  <div class="header-bar">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B4%E0%B8%93%E0%B8%A3%E0%B8%B2%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B8%AD%E0%B8%B3%E0%B8%A3%E0%B8%B8%E0%B8%87.png" id="smallLogo" class="logo-img logo-small" alt="โลโก้โรงเรียน">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Thai_OBEC_emblem.svg/960px-Thai_OBEC_emblem.svg.png?20230706081803" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
+    <div class="header-bar">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B4%E0%B8%93%E0%B8%A3%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B8%AD%E0%B8%B3%E0%B8%A3%E0%B8%B8%E0%B8%87.png" id="smallLogo" class="logo-img logo-small" alt="โลโก้โรงเรียน">
+        <img src="https://upload.wikimedia.org/wikipedia/th/6/69/Thai_OBEC_emblem.svg" id="obecLogo" class="logo-img logo-obec" alt="โลโก้ สพฐ.">
+        <div class="header-title pt-1" id="ui-title">กำลังโหลด...</div>
+        <div class="header-subtitle mt-2" id="ui-subtitle">กำลังโหลด...</div>
+        <div class="header-subtitle mt-1 fw-bold" id="ui-school">กำลังโหลด...</div>
+        <div class="header-subtitle mt-1 fw-bold" style="color: #FFD700;" id="ui-area">กำลังโหลด...</div>
+    </div>
 
-    <div class="header-title pt-1">🎯 ระบบแสดงผลคะแนนสอบรายบุคคล</div> 
-    <div class="header-subtitle mt-2">✨ นักเรียนห้องเรียนปกติ และนักเรียนความสามารถพิเศษ ✨<br>ระดับชั้นมัธยมศึกษาปีที่ 1 และ 4 ปีการศึกษา 2569</div>
-    <div class="header-subtitle mt-1 fw-bold">โรงเรียนปราจิณราษฎรอำรุง</div>
-    <div class="header-subtitle mt-1 fw-bold" style="color: #FFD700;">สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาปราจีนบุรี นครนายก</div>
-  </div>
-
-  <div class="container mt-4 mb-5">
-    
-    <div id="searchSection" class="row justify-content-center">
-      <div class="col-md-6 col-lg-5 text-center">
+    <div class="container mt-4 mb-5">
         
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B4%E0%B8%93%E0%B8%A3%E0%B8%B2%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B8%AD%E0%B8%B3%E0%B8%A3%E0%B8%B8%E0%B8%87.png" id="largeLogo" class="logo-img logo-large mb-4" alt="โลโก้โรงเรียน">
-        
-        <div id="publicAnnouncementBox" class="announcement-box">
-          <div class="d-flex align-items-center mb-2">
-            <span class="fs-4 me-2">📢</span> <h5 class="fw-bold m-0" style="color: var(--primary-color);">ประกาศจากระบบ!</h5>
-          </div>
-          <div id="publicAnnouncementText" class="text-secondary fw-bold" style="white-space: pre-wrap;">กำลังโหลดประกาศ...</div>
+        <div id="searchSection" class="row justify-content-center">
+            <div class="col-md-6 col-lg-5 text-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/%E0%B9%82%E0%B8%A3%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%B4%E0%B8%93%E0%B8%A3%E0%B8%A9%E0%B8%8E%E0%B8%A3%E0%B8%AD%E0%B8%B3%E0%B8%A3%E0%B8%B8%E0%B8%87.png" class="logo-img logo-large mb-4" alt="โลโก้โรงเรียน">
+                
+                <div id="publicAnnouncementBox" class="announcement-box">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="fs-4 me-2">📢</span><h5 class="fw-bold m-0" style="color: var(--primary-color);">ประกาศจากระบบ!</h5>
+                    </div>
+                    <div id="publicAnnouncementText" class="text-secondary fw-bold" style="white-space: pre-wrap;">กำลังโหลดประกาศ...</div>
+                </div>
+
+                <div class="card card-custom p-4 pb-5">
+                    <h4 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700;">🔐 เข้าสู่ระบบเพื่อดูคะแนน</h4>
+                    <form id="searchForm">
+                        <div class="mb-4">
+                            <input type="text" class="form-control form-control-lg text-center fs-4" id="studentIdInput" placeholder="✍️ กรอกเลขประจำตัวประชาชน" required style="border-radius: 15px; border: 2px solid var(--primary-color);">
+                        </div>
+                        <button type="submit" class="btn btn-login btn-custom w-100 mb-2">🚀 เข้าสู่ระบบเพื่อดูคะแนน</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="card card-custom p-4 pb-5">
-          <h4 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700;">🔐 เข้าสู่ระบบเพื่อดูคะแนน</h4>
-          <form id="searchForm" onsubmit="handleSearch(event)">
-            <div class="mb-4">
-              <input type="text" class="form-control form-control-lg text-center fs-4" id="studentIdInput" placeholder="✍️ กรอกเลขประจำตัวประชาชน" required style="border-radius: 15px; border: 2px solid var(--primary-color);">
+        <div id="adminSection" class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card card-custom p-4">
+                    <h4 class="text-center mb-4" style="font-weight: 700; color: var(--primary-color);">👨‍💻 ผู้ดูแลระบบ (Admin)</h4>
+                    <form id="adminLoginForm">
+                        <div class="mb-3"><input type="text" class="form-control fs-5" id="adminUser" placeholder="👤 Username" required></div>
+                        <div class="mb-4"><input type="password" class="form-control fs-5" id="adminPass" placeholder="🔑 Password" required></div>
+                        <button type="submit" class="btn w-100 mb-3 btn-custom fw-bold" style="background-color: var(--secondary-color); color: var(--primary-color);">🔓 เข้าสู่ระบบจัดการ</button>
+                        <button type="button" class="btn btn-secondary w-100 btn-custom" id="btnBack">⬅️ กลับหน้าหลัก</button>
+                    </form>
+                    
+                    <div id="adminControlPanel" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: var(--primary-color);">📢 แจ้งข่าว / อัปเดตประกาศระบบ</label>
+                            <textarea class="form-control" id="adminAnnounceText" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแจ้งเตือน..."></textarea>
+                        </div>
+                        <button class="btn btn-success w-100 mb-3 btn-custom fw-bold" id="btnSaveAnnounce">💾 บันทึกประกาศขึ้นระบบ</button>
+                        <hr>
+                        <button class="btn btn-login w-100 mb-3 btn-custom fw-bold" id="btnOpenDB">🗄️ เปิดฐานข้อมูล (Google Sheet)</button>
+                        <button class="btn btn-danger-custom w-100 btn-custom" id="btnLogoutAdmin">🚪 ออกจากระบบแอดมิน</button>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-login btn-custom w-100 mb-2">🚀 เข้าสู่ระบบเพื่อดูคะแนน</button>
-          </form>
         </div>
-      </div>
+
+        <div id="dashboardSection" class="row justify-content-center">
+            <div class="col-md-11 col-lg-9">
+                <div class="card card-custom p-4 pb-4">
+                    <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
+                        <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">👤 ข้อมูลนักเรียน</h4>
+                    </div>
+                    <div id="studentInfo" class="mb-4 bg-white p-3 rounded-4 border shadow-sm" style="font-size: 1.2rem;"></div>
+
+                    <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
+                        <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">📊 ผลคะแนนสอบ</h4>
+                    </div>
+                    <div id="scoreGridContainer" class="score-grid"></div>
+                    <div id="summaryGridContainer" class="summary-grid"></div>
+
+                    <div class="row mb-4 justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <a href="#" target="_blank" id="ui-fb" class="btn btn-custom btn-facebook w-100 shadow">📘 ติดต่อ Facebook โรงเรียน</a>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger-custom btn-custom w-100 shadow-sm" id="btnLogoutUser">🚪 ปิดหน้าต่าง</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div id="adminSection" class="row justify-content-center">
-      <div class="col-md-6 col-lg-5">
-        <div class="card card-custom p-4">
-          <h4 class="text-center mb-4" style="font-weight: 700; color: var(--primary-color);">👨‍💻 ผู้ดูแลระบบ (Admin)</h4>
-          
-          <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-            <div class="mb-3"><input type="text" class="form-control fs-5" id="adminUser" placeholder="👤 Username" required></div>
-            <div class="mb-4"><input type="password" class="form-control fs-5" id="adminPass" placeholder="🔑 Password" required></div>
-            <button type="submit" class="btn w-100 mb-3 btn-custom fw-bold" style="background-color: var(--secondary-color); color: var(--primary-color);">🔓 เข้าสู่ระบบจัดการ</button>
-            <button type="button" class="btn btn-secondary w-100 btn-custom" onclick="showSearch()">⬅️ กลับหน้าหลัก</button>
-          </form>
+    <button id="btnAdminFloat" class="btn-admin-float">⚙️ สำหรับผู้ดูแลระบบ</button>
 
-          <div id="adminControlPanel" style="display: none;">
-            <div class="mb-3">
-              <label class="form-label fw-bold" style="color: var(--primary-color);">📢 แจ้งข่าว / อัปเดตประกาศระบบ</label>
-              <textarea class="form-control" id="adminAnnounceText" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแจ้งเตือน... (ปล่อยว่างหากต้องการลบประกาศ)"></textarea>
-            </div>
-            <button class="btn btn-success w-100 mb-3 btn-custom fw-bold" onclick="saveAnnouncement()">💾 บันทึกประกาศขึ้นระบบ</button>
-            <hr>
-            <button class="btn btn-login w-100 mb-3 btn-custom fw-bold" onclick="openDatabase()">🗄️ เปิดฐานข้อมูล (Google Sheet)</button>
-            <button class="btn btn-danger-custom w-100 btn-custom" onclick="logoutAdmin()">🚪 ออกจากระบบแอดมิน</button>
-          </div>
+    <footer class="footer" id="ui-footer"></footer>
 
-        </div>
-      </div>
-    </div>
-
-    <div id="dashboardSection" class="row justify-content-center">
-      <div class="col-md-11 col-lg-9">
-        <div class="card card-custom p-4 pb-4">
-          
-          <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
-            <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">👤 ข้อมูลนักเรียน</h4>
-          </div>
-          <div id="studentInfo" class="mb-4 bg-white p-3 rounded-4 border shadow-sm" style="font-size: 1.2rem;">
-          </div>
-          
-          <div class="d-flex align-items-center mb-3 pb-2 border-bottom border-2" style="border-color: var(--primary-color) !important;">
-            <h4 class="m-0" style="color: var(--primary-color); font-weight: 700;">📊 ผลคะแนนสอบ</h4>
-          </div>
-          
-          <div id="scoreGridContainer" class="score-grid"></div>
-          <div id="summaryGridContainer" class="summary-grid"></div>
-
-          <div class="row mb-4 justify-content-center">
-            <div class="col-md-8 text-center">
-              <a href="https://www.facebook.com/prachinratsadornamroongschool?locale=th_TH" target="_blank" class="btn btn-custom btn-facebook w-100 shadow">
-                📘 ติดต่อ Facebook โรงเรียน
-              </a>
-            </div>
-          </div>
-
-          <button class="btn btn-danger-custom btn-custom w-100 shadow-sm" onclick="logout()">🚪 ปิดหน้าต่าง</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <button id="btnAdminFloat" class="btn-admin-float" onclick="showAdminLogin()">⚙️ สำหรับผู้ดูแลระบบ</button>
-
-  <footer class="footer">
-    © 2026 งานรับนักเรียน Create by กลุ่มงานเทคโนโลยี
-  </footer>
-
-  <script>
-    // 🛑 [เปลี่ยนตรงนี้] วาง URL ที่ได้จาก Google Apps Script ของคุณ 🛑
-    const API_URL = "https://script.google.com/macros/s/AKfycbzRpSAqFx6iMnn9gRrOOtGhN4U_TjTpNexYGim05Ui4KhEaD9VZpFiEU9eGuJC9yf4b/exec";
-
-    let currentUser = '';
-    let currentPass = '';
-    let dbUrl = '';
-
-    window.onload = function() { fetchAnnouncement(); };
-
-    // ฟังก์ชันตัวกลางสำหรับยิง API 
-    async function callAPI(payload) {
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          redirect: "follow",
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-        return await response.json();
-      } catch (error) {
-        return { success: false, message: "เชื่อมต่อฐานข้อมูลล้มเหลว: " + error.message };
-      }
-    }
-
-    async function fetchAnnouncement() {
-      try {
-        const res = await fetch(API_URL + "?action=getAnnouncement");
-        const data = await res.json();
-        if(data.text && data.text.trim() !== "") {
-          document.getElementById('publicAnnouncementBox').style.display = 'block';
-          document.getElementById('publicAnnouncementText').innerText = data.text;
-          document.getElementById('adminAnnounceText').value = data.text;
-        } else {
-          document.getElementById('publicAnnouncementBox').style.display = 'none';
-        }
-      } catch (error) {
-        console.error("Fetch announcement error", error);
-      }
-    }
-
-    function showSearch() {
-      document.getElementById('searchSection').style.display = 'flex';
-      document.getElementById('adminSection').style.display = 'none';
-      document.getElementById('dashboardSection').style.display = 'none';
-      document.getElementById('studentIdInput').value = '';
-      document.getElementById('smallLogo').style.display = 'none';
-      document.getElementById('obecLogo').style.display = 'none';
-      document.getElementById('btnAdminFloat').style.display = 'block';
-    }
-
-    function showAdminLogin() {
-      document.getElementById('searchSection').style.display = 'none';
-      document.getElementById('adminSection').style.display = 'flex';
-      document.getElementById('dashboardSection').style.display = 'none';
-      document.getElementById('adminLoginForm').style.display = 'block';
-      document.getElementById('adminControlPanel').style.display = 'none';
-      document.getElementById('adminUser').value = '';
-      document.getElementById('adminPass').value = '';
-      document.getElementById('btnAdminFloat').style.display = 'none';
-    }
-
-    function showDashboard() {
-      document.getElementById('searchSection').style.display = 'none';
-      document.getElementById('adminSection').style.display = 'none';
-      document.getElementById('dashboardSection').style.display = 'flex';
-      document.getElementById('smallLogo').style.display = 'block'; 
-      document.getElementById('obecLogo').style.display = 'block'; 
-      document.getElementById('btnAdminFloat').style.display = 'none';
-    }
-
-    async function handleAdminLogin(e) {
-      e.preventDefault();
-      currentUser = document.getElementById('adminUser').value;
-      currentPass = document.getElementById('adminPass').value;
-      Swal.fire({ title: 'กำลังตรวจสอบสิทธิ์... 🕵️‍♂️', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
-      
-      const res = await callAPI({ action: "checkAdmin", user: currentUser, pass: currentPass });
-      
-      if(res.success) {
-        dbUrl = res.url;
-        Swal.close();
-        document.getElementById('adminLoginForm').style.display = 'none';
-        document.getElementById('adminControlPanel').style.display = 'block';
-        fetchAnnouncement(); 
-      } else {
-        Swal.fire({ icon: 'error', title: '❌ เข้าสู่ระบบล้มเหลว', text: res.message });
-      }
-    }
-
-    async function saveAnnouncement() {
-      const text = document.getElementById('adminAnnounceText').value;
-      Swal.fire({ title: 'กำลังบันทึก...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
-      
-      const res = await callAPI({ action: "saveAnnouncement", text: text, user: currentUser, pass: currentPass });
-      
-      if(res.success) {
-        Swal.fire({ icon: 'success', title: '✅ บันทึกสำเร็จ!', text: 'อัปเดตประกาศเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
-        fetchAnnouncement(); 
-      } else {
-        Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: res.message });
-      }
-    }
-
-    function openDatabase() { if(dbUrl) window.open(dbUrl, '_blank'); }
-
-    function logoutAdmin() { currentUser = ''; currentPass = ''; dbUrl = ''; showSearch(); }
-
-    async function handleSearch(e) {
-      e.preventDefault();
-      const studentId = document.getElementById('studentIdInput').value;
-      
-      Swal.fire({
-        title: 'กำลังค้นหาข้อมูล... 🚀',
-        html: '<b>ระบบกำลังค้นหาข้อมูลให้ครับ</b><br>กรุณารอสักครู่...',
-        allowOutsideClick: false,
-        background: '#fff',
-        backdrop: `rgba(0,34,68,0.4)`,
-        didOpen: () => { Swal.showLoading(); }
-      });
-
-      const response = await callAPI({ action: "search", studentId: studentId });
-
-      if (response.success) {
-        Swal.fire({ icon: 'success', title: '🎉 ค้นหาสำเร็จ!', text: 'เตรียมข้อมูลเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
-        renderDashboard(response.data, response.headers);
-        showDashboard();
-      } else {
-        Swal.fire({ icon: 'error', title: '❌ อ๊ะ! ไม่พบข้อมูล', text: response.message, confirmButtonColor: '#002244' }); 
-      }
-    }
-
-    function renderDashboard(data, headers) {
-      let infoHtml = ''; let cardsHtml = ''; let summaryHtml = ''; 
-      let totalScoreCardHtml = ''; let resultCardHtml = '';
-      
-      const infoFields = ['ระดับชั้น/โครงการ', 'รหัสประจำตัวประชาชน', 'รหัส', 'ชื่อ-สกุล']; 
-      
-      infoFields.forEach(field => {
-        if(data[field] !== undefined) {
-           infoHtml += `<div class="mb-2"><span class="text-secondary fw-bold" style="color:#6c757d !important;">${field} :</span> <strong style="color: var(--primary-color);" class="fs-4 ms-2">${data[field]}</strong></div>`;
-        }
-      });
-
-      headers.forEach(key => {
-        if(!infoFields.includes(key) && data[key] !== undefined) {
-          let scoreValue = data[key] === "" ? "-" : data[key];
-          
-          if(key.includes("รวม")) {
-            totalScoreCardHtml = `<div class="score-card total-score"><div class="score-title">🏆 ${key}</div><div class="score-value">${scoreValue}</div></div>`;
-          } else if(key === "ผลการสอบ") {
-            resultCardHtml = `<div class="score-card result-score"><div class="score-title">📌 ${key}</div><div class="score-value">${scoreValue}</div></div>`;
-          } else {
-            let icon = '📝';
-            if(key.includes("วิทย์")) icon = '🔬';
-            if(key.includes("คณิต")) icon = '🔢';
-            if(key.includes("อังกฤษ")) icon = '🔤'; 
-            if(key.includes("สัมภาษณ์")) icon = '🎤'; 
-            cardsHtml += `<div class="score-card"><div class="score-title">${icon} ${key}</div><div class="score-value">${scoreValue}</div></div>`;
-          }
-        }
-      });
-
-      if(totalScoreCardHtml || resultCardHtml) summaryHtml = totalScoreCardHtml + resultCardHtml;
-
-      document.getElementById('studentInfo').innerHTML = infoHtml;
-      document.getElementById('scoreGridContainer').innerHTML = cardsHtml;
-      document.getElementById('summaryGridContainer').innerHTML = summaryHtml;
-    }
-
-    function logout() {
-      Swal.fire({
-        title: 'ต้องการปิดหน้าต่าง? 🚪',
-        text: "ข้อมูลของคุณจะถูกล้างเพื่อความปลอดภัย",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#002244', 
-        confirmButtonText: 'ปิดหน้าต่าง',
-        cancelButtonText: 'ยกเลิก'
-      }).then((result) => {
-        if (result.isConfirmed) {
-           document.getElementById('studentInfo').innerHTML = '';
-           document.getElementById('scoreGridContainer').innerHTML = '';
-           document.getElementById('summaryGridContainer').innerHTML = '';
-           showSearch();
-        }
-      })
-    }
-  </script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>
